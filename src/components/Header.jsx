@@ -1,33 +1,51 @@
-import React from "react";
-import { signOut } from "firebase/auth";
+import React, { useEffect } from "react";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addUser, removeUser } from "../utils/userSlice";
+import logo from "/oneflixlogo.png";
 
 const Header = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
   console.log(user);
   const handleSingOut = () => {
     signOut(auth)
       .then(() => {
         // Sign-out successful.
-        navigate("/");
       })
       .catch((error) => {
         // An error happened.
+        navigate("/error");
       });
   };
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { uid, email, displayName } = user;
+
+        dispatch(addUser({ uid: uid, email: email, displayName: displayName }));
+        navigate("/browse");
+      } else {
+        // User is signed out
+        dispatch(removeUser());
+        navigate("/");
+      }
+    });
+
+    //unsubscribe when component unmounts
+    return () => unsub();
+  }, []);
+
   return (
     <div className="absolute z-10 px-8 py-2 bg-gradient-to-b from-black w-full flex justify-between">
-      <img
-        className="w-44 "
-        src="https://help.nflxext.com/helpcenter/OneTrust/oneTrust_production_2025-07-24/consent/87b6a5c0-0104-4e96-a291-092c11350111/019808e2-d1e7-7c0f-ad43-c485b7d9a221/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png"
-        alt="logo"
-      />
+      <img className="w-50 m-2" src={logo} alt="logo" />
       {user && (
         <div className="flex">
-          <h1>{user.displayName}</h1>
+          <h1 className="text-white text-xl p-2 m-4">{user.displayName}</h1>
           <button
             className="text-xl text-white p-2 m-2 rounded-lg bg-red-700"
             onClick={handleSingOut}
