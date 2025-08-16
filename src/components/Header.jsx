@@ -10,7 +10,7 @@ const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
-  console.log(user);
+  //console.log(user);
   const handleSingOut = () => {
     signOut(auth)
       .then(() => {
@@ -28,11 +28,11 @@ const Header = () => {
         const { uid, email, displayName } = user;
 
         dispatch(addUser({ uid: uid, email: email, displayName: displayName }));
-        navigate("/browse");
+        navigate("/oneflix/browse");
       } else {
         // User is signed out
         dispatch(removeUser());
-        navigate("/");
+        navigate("/oneflix/");
       }
     });
 

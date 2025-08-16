@@ -11,11 +11,11 @@ const Body = () => {
   const dispatch = useDispatch();
   const appRouter = createBrowserRouter([
     {
-      path: "/",
+      path: "/oneflix/",
       element: <Login />,
     },
     {
-      path: "/browse",
+      path: "/oneflix/browse",
       element: <Browse />,
     },
   ]);
