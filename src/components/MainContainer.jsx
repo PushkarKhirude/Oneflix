@@ -8,7 +8,7 @@ const MainContainer = () => {
 
   //early return
   if (movies === null) return; //nowPlayingMovies is null initially so we return
-  const mainMovie = movies[1];
+  const mainMovie = movies[3];
   //console.log(mainMovie);
 
   const { original_title, overview, id } = mainMovie;
